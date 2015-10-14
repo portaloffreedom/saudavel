@@ -1,11 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <TextView android:text="Hello World!" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:elevation="100dp"
+        card_view:cardCornerRadius="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:padding="22dp"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView android:text="@string/energy_balance_title"
+                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView android:text="food: 327/2000 cal"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView android:text="exercise: 200/500 cal"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView android:text="BMR: 750/1950 cal"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardview_2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:elevation="100dp"
+        card_view:cardCornerRadius="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:padding="16dp"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView android:text="If you keep this way you will reach your goal in"
+                android:layout_margin="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView android:text="75 Days"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>
+
 </RelativeLayout>

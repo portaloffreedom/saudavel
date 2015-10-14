@@ -2,6 +2,7 @@ package com.example.mbie.saudavel;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.CardView;
 import android.view.Menu;
 import android.view.MenuItem;
 
