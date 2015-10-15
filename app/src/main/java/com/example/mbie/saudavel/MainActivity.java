@@ -71,7 +71,7 @@ public class MainActivity extends ActionBarActivity {
         int exerciseCalTarget = (int) bodyData.getExerciseCalTarget();
         int exerciseCalReached = (int) bodyData.getExerciseCalReached();
         int foodCalTarget = (int) bodyData.getFoodCalTarget(this);
-        int foodCalReached = (int) bodyData.getFoodCalReached();
+        int foodCalReached = (int) BodyData.getFoodCalReached(this);
         int BMRTarget = (int) BodyData.getBMRTarget(this);
         int BMRReached = (int) bodyData.getBMRReached(this);
         int remainingDays = (int) BodyData.getRemainingDays(this);

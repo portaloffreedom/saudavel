@@ -56,6 +56,40 @@ public class BodyData {
         return Float.parseFloat(getSetting(context, "target_weight"));
     }
 
+    static private void setFood(SharedPreferences sharedPref, float foodToday) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putFloat("food_today", foodToday);
+        editor.putLong("food_last_measured", new Date().getTime());
+        editor.commit();
+    }
+
+    static public void addFoodToday(Context context, float addFood) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        float food = getFoodCalReached(sharedPref);
+        setFood(sharedPref, food + addFood);
+    }
+
+    static public float getFoodCalReached(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return getFoodCalReached(sharedPref);
+    }
+
+    static private float getFoodCalReached(SharedPreferences sharedPref) {
+        Calendar lastMeasured = Calendar.getInstance();
+        lastMeasured.setTime(new Date(sharedPref.getLong("food_last_measured", 0)));
+
+        Calendar now = Calendar.getInstance();
+        now.setTime(new Date());
+
+        if (lastMeasured.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
+            setFood(sharedPref, 0);
+            return 0;
+        }
+
+        return sharedPref.getFloat("food_today", 0);
+    }
+
     static public float getRemainingDays(Context context) {
         String targetDayString = getSetting(context, "target_day");
         Date now = new Date();
@@ -94,10 +128,6 @@ public class BodyData {
                 (int) getRemainingDays(context));
         double ESTarget = Coach.calculateESTarget(weightChange, (int) getRemainingDays(context));
         return exerciseCalTarget + getBMRTarget(context) + ESTarget;
-    }
-
-    public float getFoodCalReached() {
-        return foodCalReached;
     }
 
     public void setFoodCalReached(float foodCalReached) {
