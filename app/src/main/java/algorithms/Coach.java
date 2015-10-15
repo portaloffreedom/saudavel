@@ -14,6 +14,7 @@ public class Coach {
     private final double CONST_BMR_FEMALE_HEIGHT_PONDEROSITY = 3.098;
     private final double CONST_BMR_FEMALE_AGE_PONDEROSITY = 4.330;
     private final double CONST_ES_TARGET_FACTOR = 9300;
+    private final int CONST_CALORIC_DEFICIT = 500;
 
 
     public double calculateBMR (String gender, double weight, double height, int age) {
@@ -34,5 +35,9 @@ public class Coach {
 
     public double calculateESTarget (double deltaWeight, int daysToGoal) {
         return (deltaWeight * CONST_ES_TARGET_FACTOR) / daysToGoal;
+    }
+
+    public double calculateWeighChangeTarget (int daysToGoal) {
+        return (daysToGoal * CONST_CALORIC_DEFICIT) / CONST_ES_TARGET_FACTOR;
     }
 }
