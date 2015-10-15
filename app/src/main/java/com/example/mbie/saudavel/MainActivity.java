@@ -49,18 +49,13 @@ public class MainActivity extends ActionBarActivity {
 
     private GoogleApiClient mClient = null;
 
-    private int exerciseCalTarget = 0;
-    private int exerciseCalReached = 0;
-
-    private int foodCalTarget = 2000;
-    private int foodCalReached = 43;
-
-    private int BMRTarget = 1990;
+    BodyData bodyData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bodyData = new BodyData();
 
         setupView();
 
@@ -72,32 +67,27 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    static final float DAY_IN_MS = 1000 * 60 * 60 * 24;
     private void setupView() {
+        int exerciseCalTarget = (int) bodyData.getExerciseCalTarget();
+        int exerciseCalReached = (int) bodyData.getExerciseCalReached();
+        int foodCalTarget = (int) bodyData.getFoodCalTarget(this);
+        int foodCalReached = (int) bodyData.getFoodCalReached();
+        int BMRTarget = (int) BodyData.getBMRTarget(this);
+        int BMRReached = (int) bodyData.getBMRReached(this);
+        int remainingDays = (int) BodyData.getRemainingDays(this);
 
         TextView food = (TextView) findViewById(R.id.food_text);
         TextView exercise = (TextView) findViewById(R.id.exercise_text);
         TextView bmr = (TextView) findViewById(R.id.bmr_text);
+        TextView remainingDaysText = (TextView) findViewById(R.id.remaining_days_text);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        long now = cal.getTimeInMillis();
-
-        Calendar dayStartCal = Calendar.getInstance();
-        dayStartCal.setTime(new Date());
-        dayStartCal.set(Calendar.HOUR_OF_DAY, 0);
-        dayStartCal.set(Calendar.MINUTE, 0);
-        dayStartCal.set(Calendar.SECOND, 0);
-        dayStartCal.set(Calendar.MILLISECOND, 0);
-        long dayStart = dayStartCal.getTimeInMillis();
-
-        int BMRReached = (int) (BMRTarget * ((now - dayStart)/ DAY_IN_MS    ));
-
-        foodCalTarget = exerciseCalTarget + BMRTarget;
 
         food.setText     ("food: "     + foodCalReached     + '/' + foodCalTarget     + " cal");
         exercise.setText ("exercise: " + exerciseCalReached + '/' + exerciseCalTarget + " cal");
-        bmr.setText      ("bmr: "      + BMRReached         + '/' + BMRTarget        + " cal");
+        bmr.setText      ("bmr: "      + BMRReached         + '/' + BMRTarget         + " cal");
+
+        remainingDaysText.setText(remainingDays + " days");
+
     }
 
 
@@ -223,16 +213,16 @@ public class MainActivity extends ActionBarActivity {
                     public void onResult(DataReadResult dataReadResult) {
                         Log.i(TAG, "Result for last week calories");
                         if (dataReadResult.getBuckets().size() > 0) {
-                            float _exerciseCalTarget = 0;
+                            float exerciseCalTarget = 0;
                             for (Bucket bucket : dataReadResult.getBuckets()) {
                                 List<DataSet> dataSets = bucket.getDataSets();
                                 for (DataSet dataSet : dataSets) {
                                     // show data points
-                                    _exerciseCalTarget += processDataSetCalories(dataSet);
+                                    exerciseCalTarget += processDataSetCalories(dataSet);
                                 }
                             }
-                            _exerciseCalTarget /= dataReadResult.getBuckets().size();
-                            exerciseCalTarget = (int) _exerciseCalTarget;
+                            exerciseCalTarget /= dataReadResult.getBuckets().size();
+                            bodyData.setExerciseCalTarget(exerciseCalTarget);
 
                             setupView();
                         }
@@ -295,7 +285,7 @@ public class MainActivity extends ActionBarActivity {
                     public void onResult(DataReadResult dataReadResult) {
                         Log.i(TAG, "Result for last week calories");
                         if (dataReadResult.getBuckets().size() > 0) {
-                            float _exerciseCalReached = 0;
+                            float exerciseCalReached = 0;
                             int counter = 0;
                             for (Bucket bucket : dataReadResult.getBuckets()) {
                                 List<DataSet> dataSets = bucket.getDataSets();
@@ -308,14 +298,14 @@ public class MainActivity extends ActionBarActivity {
                                             Log.i(TAG, "\tField: " + fieldName + " Value: " + dp.getValue(field));
                                             if (fieldName.equals("calories")) {
                                                 counter++;
-                                                _exerciseCalReached += dp.getValue(field).asFloat();
+                                                exerciseCalReached += dp.getValue(field).asFloat();
                                             }
                                         }
                                     }
                                 }
                             }
-                            _exerciseCalReached /= counter;
-                            exerciseCalReached = (int) _exerciseCalReached;
+                            exerciseCalReached /= counter;
+                            bodyData.setExerciseCalReached(exerciseCalReached);
 
 
                             setupView();

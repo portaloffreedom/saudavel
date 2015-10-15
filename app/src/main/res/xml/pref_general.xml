@@ -26,6 +26,13 @@
         android:inputType="number"/>
 
     <EditTextPreference
+        android:key="height"
+        android:title="Height"
+        android:defaultValue="175"
+        android:selectAllOnFocus="true"
+        android:inputType="number"/>
+
+    <EditTextPreference
         android:key="body_fat_percentage"
         android:title="Body Fat Percentage"
         android:defaultValue="25"

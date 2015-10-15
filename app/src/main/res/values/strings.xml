@@ -23,8 +23,8 @@
         <item>Male</item>
     </string-array>
     <string-array name="pref_sex_list_values">
-        <item>M</item>
         <item>F</item>
+        <item>M</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->

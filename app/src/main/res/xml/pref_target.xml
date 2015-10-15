@@ -1,0 +1,17 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="target_weight"
+        android:title="Target Weight"
+        android:defaultValue="75"
+        android:selectAllOnFocus="true"
+        android:inputType="number"/>
+
+    <com.example.mbie.saudavel.DatePreference
+        android:key="target_day"
+        android:title="Target end"
+        android:defaultValue="2016-01-01"
+        android:selectAllOnFocus="true"
+        android:inputType="date"/>
+
+</PreferenceScreen>
