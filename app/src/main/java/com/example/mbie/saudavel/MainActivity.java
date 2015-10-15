@@ -49,8 +49,8 @@ public class MainActivity extends ActionBarActivity {
 
     private GoogleApiClient mClient = null;
 
-    private int exerciseCalTarget = 500;
-    private int exerciseCalReached = 42;
+    private int exerciseCalTarget = 0;
+    private int exerciseCalReached = 0;
 
     private int foodCalTarget = 2000;
     private int foodCalReached = 43;
@@ -117,6 +117,7 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
 
