@@ -4,15 +4,16 @@ package algorithms;
  * Created by lenin on 15/10/15.
  */
 public class Coach {
-    final String GENDER_MALE = "M";
-    final double CONST_BMR_MALE_FACTOR = 88.362;
-    final double CONST_BMR_MALE_WEIGHT_PONDEROSITY = 13.397;
-    final double CONST_BMR_MALE_HEIGHT_PONDEROSITY = 4.799;
-    final double CONST_BMR_MALE_AGE_PONDEROSITY = 5.677;
-    final double CONST_BMR_FEMALE_FACTOR = 447.593;
-    final double CONST_BMR_FEMALE_WEIGHT_PONDEROSITY = 9.247;
-    final double CONST_BMR_FEMALE_HEIGHT_PONDEROSITY = 3.098;
-    final double CONST_BMR_FEMALE_AGE_PONDEROSITY = 4.330;
+    private final String GENDER_MALE = "M";
+    private final double CONST_BMR_MALE_FACTOR = 88.362;
+    private final double CONST_BMR_MALE_WEIGHT_PONDEROSITY = 13.397;
+    private final double CONST_BMR_MALE_HEIGHT_PONDEROSITY = 4.799;
+    private final double CONST_BMR_MALE_AGE_PONDEROSITY = 5.677;
+    private final double CONST_BMR_FEMALE_FACTOR = 447.593;
+    private final double CONST_BMR_FEMALE_WEIGHT_PONDEROSITY = 9.247;
+    private final double CONST_BMR_FEMALE_HEIGHT_PONDEROSITY = 3.098;
+    private final double CONST_BMR_FEMALE_AGE_PONDEROSITY = 4.330;
+    private final double CONST_ES_TARGET_FACTOR = 9300;
 
 
     public double calculateBMR (String gender, double weight, double height, int age) {
@@ -31,4 +32,7 @@ public class Coach {
         return result;
     }
 
+    public double calculateESTarget (double deltaWeight, int daysToGoal) {
+        return (deltaWeight * CONST_ES_TARGET_FACTOR) / daysToGoal;
+    }
 }
