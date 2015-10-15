@@ -56,6 +56,11 @@ public class BodyData {
         return Float.parseFloat(getSetting(context, "target_weight"));
     }
 
+    static public void resetFood(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        setFood(sharedPref, 0);
+    }
+
     static private void setFood(SharedPreferences sharedPref, float foodToday) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putFloat("food_today", foodToday);
