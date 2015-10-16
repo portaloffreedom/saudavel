@@ -21,20 +21,27 @@ import algorithms.Coach;
  */
 public class BodyData {
     private static final String TAG = "BodyData";
-    static private final long DAY_IN_MS = 1000 * 60 * 60 * 24;
-    static private final double WARNING_ES_TARGET = -1000;
+    static final String SETTING_WEIGHT = "weight";
+    static final String SETTING_HEIGHT = "height";
+    static final String SETTING_AGE = "age";
+    static final String SETTING_BFP = "body_fat_percentage";
+    static final String SETTING_SEX = "sex";
+    static final String SETTING_TARGET_WEIGHT = "target_weight";
+    static final String SETTING_TARGET_DAY = "target_day";
+    static final String SETTING_FOOD_TODAY = "food_today";
+    static final String SETTING_FOOD_LAST_MEASURED = "food_last_measured";
+    private static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
+    private static final double WARNING_ES_TARGET = -1000;
     private static final double WARNING_ES_EXERCISE_TARGET = 1000;
 
     static private boolean warningShown = false;
 
     private float exerciseCalTarget;
     private float exerciseCalReached;
-    private float foodCalReached;
 
     public BodyData() {
         exerciseCalTarget = 0;
         exerciseCalReached = 0;
-        foodCalReached = 43;
     }
 
     static private String getSetting(Context context, String key) {
@@ -43,27 +50,27 @@ public class BodyData {
     }
 
     static public float getWeight(Context context) {
-        return Float.parseFloat(getSetting(context, "weight"));
+        return Float.parseFloat(getSetting(context, SETTING_WEIGHT));
     }
 
     static public float getHeight(Context context) {
-        return Float.parseFloat(getSetting(context, "height"));
+        return Float.parseFloat(getSetting(context, SETTING_HEIGHT));
     }
 
     static public float getAge(Context context) {
-        return Float.parseFloat(getSetting(context, "age"));
+        return Float.parseFloat(getSetting(context, SETTING_AGE));
     }
 
     static public float getBodyFatPercentage(Context context) {
-        return Float.parseFloat(getSetting(context, "body_fat_percentage"));
+        return Float.parseFloat(getSetting(context, SETTING_BFP));
     }
 
     static public String getSex(Context context) {
-        return getSetting(context, "sex");
+        return getSetting(context, SETTING_SEX);
     }
 
     static public float getTargetWeight(Context context) {
-        return Float.parseFloat(getSetting(context, "target_weight"));
+        return Float.parseFloat(getSetting(context, SETTING_TARGET_WEIGHT));
     }
 
     static public void resetFood(Context context) {
@@ -73,8 +80,8 @@ public class BodyData {
 
     static private void setFood(SharedPreferences sharedPref, float foodToday) {
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putFloat("food_today", foodToday);
-        editor.putLong("food_last_measured", new Date().getTime());
+        editor.putFloat(SETTING_FOOD_TODAY, foodToday);
+        editor.putLong(SETTING_FOOD_LAST_MEASURED, new Date().getTime());
         editor.commit();
     }
 
@@ -92,7 +99,7 @@ public class BodyData {
 
     static private float getFoodCalReached(SharedPreferences sharedPref) {
         Calendar lastMeasured = Calendar.getInstance();
-        lastMeasured.setTime(new Date(sharedPref.getLong("food_last_measured", 0)));
+        lastMeasured.setTime(new Date(sharedPref.getLong(SETTING_FOOD_LAST_MEASURED, 0)));
 
         Calendar now = Calendar.getInstance();
         now.setTime(new Date());
@@ -102,11 +109,11 @@ public class BodyData {
             return 0;
         }
 
-        return sharedPref.getFloat("food_today", 0);
+        return sharedPref.getFloat(SETTING_FOOD_TODAY, 0);
     }
 
     static public float getRemainingDays(Context context) {
-        String targetDayString = getSetting(context, "target_day");
+        String targetDayString = getSetting(context, SETTING_TARGET_DAY);
         Date now = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date target;
@@ -142,7 +149,7 @@ public class BodyData {
                 getTargetWeight(context),
                 (int) getRemainingDays(context));
 
-        double ESTarget = Coach.calculateESTarget(weightChange, (int) getRemainingDays(context));
+        double ESTarget = Coach.calculateESTarget(weightChange, (int) getRemainingDays(context), 9300);
         double total = exerciseCalTarget + ESTarget + getBMRTarget(context);
 
         if (ESTarget < WARNING_ES_TARGET && !warningShown) {
@@ -196,10 +203,6 @@ public class BodyData {
         }
 
         return total;
-    }
-
-    public void setFoodCalReached(float foodCalReached) {
-        this.foodCalReached = foodCalReached;
     }
 
     static public double getBMRTarget(Context context) {

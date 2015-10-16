@@ -13,7 +13,7 @@ public class Coach {
     static private final double CONST_BMR_FEMALE_WEIGHT_PONDEROSITY = 9.247;
     static private final double CONST_BMR_FEMALE_HEIGHT_PONDEROSITY = 3.098;
     static private final double CONST_BMR_FEMALE_AGE_PONDEROSITY = 4.330;
-    static private final double CONST_ES_TARGET_FACTOR = 9300;
+    //static private final double CONST_ES_TARGET_FACTOR = 9300;
     static private final int CONST_CALORIC_DEFICIT = 500;
     static private final double CONST_WEIGHT_CHANGE_SMOOTHNESS = 2;
 
@@ -34,8 +34,8 @@ public class Coach {
         return result;
     }
 
-    static public double calculateESTarget (double deltaWeight, int daysToGoal) {
-        return (deltaWeight * CONST_ES_TARGET_FACTOR) / daysToGoal;
+    static public double calculateESTarget (double deltaWeight, int daysToGoal, double calToKgFactor) {
+        return (deltaWeight * calToKgFactor) / daysToGoal;
     }
 
     static public double calculateWeighChangeTarget (double weight, double targetWeight, int daysToGoal) {
