@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -124,9 +125,9 @@ public class MainActivity extends ActionBarActivity {
         TextView remainingDaysText = (TextView) findViewById(R.id.remaining_days_text);
 
 
-        food.setText     ("food: "     + foodCalReached     + '/' + foodCalTarget     + " cal");
+        food.setText("food: " + foodCalReached + '/' + foodCalTarget + " cal");
         exercise.setText ("exercise: " + exerciseCalReached + '/' + exerciseCalTarget + " cal");
-        bmr.setText      ("bmr: "      + BMRReached         + '/' + BMRTarget         + " cal");
+        bmr.setText("bmr: " + BMRReached + '/' + BMRTarget + " cal");
 
         remainingDaysText.setText(remainingDays + " days");
 
@@ -156,9 +157,67 @@ public class MainActivity extends ActionBarActivity {
             BodyData.resetFood(this);
             setupView();
             return true;
+        case R.id.action_add_new_weight:
+            setNewWeightDialog();
+            return true;
+        case R.id.action_reset_weight_to_cal:
+            BodyData.setCalToKgFactor(this, 9300);
+            setupView();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setNewWeightDialog() {
+        final Context context = this;
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Insert new calories today");
+
+        // Set up the input
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(16,16,16,16);
+
+        TextView inputWeightLabel = new TextView(this);
+        inputWeightLabel.setText("New weight");
+        layout.addView(inputWeightLabel);
+        final EditText inputWeight = new EditText(this);
+        inputWeight.setInputType(InputType.TYPE_CLASS_NUMBER);
+        layout.addView(inputWeight);
+
+        TextView inputDaysLabel = new TextView(this);
+        inputDaysLabel.setText("Days since your last measurement");
+        layout.addView(inputDaysLabel);
+        final EditText inputDaysPassed = new EditText(this);
+        inputDaysPassed.setInputType(InputType.TYPE_CLASS_NUMBER);
+        layout.addView(inputDaysPassed);
+
+        builder.setView(layout);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    double newWeight = Double.parseDouble(inputWeight.getText().toString());
+                    int daysPassed = Integer.parseInt(inputDaysPassed.getText().toString());
+                    BodyData.setWeight(context, newWeight, daysPassed);
+                    setupView();
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Error reading input values");
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     /**

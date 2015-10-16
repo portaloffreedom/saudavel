@@ -30,6 +30,7 @@ public class BodyData {
     static final String SETTING_TARGET_DAY = "target_day";
     static final String SETTING_FOOD_TODAY = "food_today";
     static final String SETTING_FOOD_LAST_MEASURED = "food_last_measured";
+    static final String SETTING_CAL_TO_KG_FACTOR = "calToKgFactor";
     private static final long DAY_IN_MS = 1000 * 60 * 60 * 24;
     private static final double WARNING_ES_TARGET = -1000;
     private static final double WARNING_ES_EXERCISE_TARGET = 1000;
@@ -51,6 +52,32 @@ public class BodyData {
 
     static public float getWeight(Context context) {
         return Float.parseFloat(getSetting(context, SETTING_WEIGHT));
+    }
+
+    static public void setWeight(Context context, double weight, int daysPassed) {
+        double expectedNewWeight = getWeight(context);
+        double targetWeight = getTargetWeight(context);
+        double daysToGoal = getRemainingDays(context) + daysPassed;
+        for (int i=0; i<daysPassed; i++) {
+            expectedNewWeight = Coach.calculateWeighChangeTarget(expectedNewWeight, targetWeight, (int) daysToGoal);
+            daysToGoal -= 1;
+        }
+
+        double expectedWeightChange = expectedNewWeight - getWeight(context);
+        setWeight(context, weight, expectedWeightChange);
+    }
+
+    static public void setWeight(Context context, double weight, double expectedWeightChange) {
+        double oldWeight = getWeight(context);
+        double calToKgFactor = getCalToKgFactor(context);
+        calToKgFactor = Coach.recalculateCalToKgFactor(calToKgFactor, oldWeight, weight, expectedWeightChange);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(SETTING_WEIGHT, Double.toString(weight));
+        editor.commit();
+
+        setCalToKgFactor(context, (float) calToKgFactor);
     }
 
     static public float getHeight(Context context) {
@@ -149,7 +176,7 @@ public class BodyData {
                 getTargetWeight(context),
                 (int) getRemainingDays(context));
 
-        double ESTarget = Coach.calculateESTarget(weightChange, (int) getRemainingDays(context), 9300);
+        double ESTarget = Coach.calculateESTarget(weightChange, (int) getRemainingDays(context), getCalToKgFactor(context));
         double total = exerciseCalTarget + ESTarget + getBMRTarget(context);
 
         if (ESTarget < WARNING_ES_TARGET && !warningShown) {
@@ -209,7 +236,7 @@ public class BodyData {
         return Coach.calculateBMR(getSex(context), getWeight(context), getHeight(context), (int) getAge(context));
     }
 
-    public double getBMRReached(Context context) {
+    static public double getBMRReached(Context context) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         long now = cal.getTimeInMillis();
@@ -223,5 +250,17 @@ public class BodyData {
         long dayStart = dayStartCal.getTimeInMillis();
 
         return (getBMRTarget(context) * ((now - dayStart)/ DAY_IN_MS ));
+    }
+
+    static public float getCalToKgFactor(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getFloat(SETTING_CAL_TO_KG_FACTOR, 9300);
+    }
+
+    static public void setCalToKgFactor(Context context, float value) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putFloat(SETTING_CAL_TO_KG_FACTOR, value);
+        editor.commit();
     }
 }

@@ -34,7 +34,7 @@ public class Coach {
         return result;
     }
 
-    static public double calculateESTarget (double deltaWeight, int daysToGoal, double calToKgFactor) {
+    static public double calculateESTarget (double deltaWeight, int daysToGoal, float calToKgFactor) {
         return (deltaWeight * calToKgFactor) / daysToGoal;
     }
 
@@ -42,5 +42,14 @@ public class Coach {
         //return (daysToGoal * CONST_CALORIC_DEFICIT) / CONST_ES_TARGET_FACTOR;
         double denominator = Math.max(daysToGoal/CONST_WEIGHT_CHANGE_SMOOTHNESS, 5);
         return (targetWeight - weight) / denominator;
+    }
+
+    static public double recalculateCalToKgFactor(double oldCalToKgFactor, double oldWeight, double newWeight, double expectedWeightChange) {
+        double calibrationError = newWeight - (oldWeight + expectedWeightChange);
+        double newCalToKgFactor = oldCalToKgFactor;
+        if (calibrationError > 0.01) {
+            newCalToKgFactor = oldCalToKgFactor-((calibrationError)*oldCalToKgFactor/10);
+        }
+        return newCalToKgFactor;
     }
 }
