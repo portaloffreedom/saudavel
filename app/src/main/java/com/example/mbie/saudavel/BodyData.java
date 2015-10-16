@@ -1,8 +1,13 @@
 package com.example.mbie.saudavel;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
+import android.util.Log;
+import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,7 +20,12 @@ import algorithms.Coach;
  * Created by matteo on 15/10/15.
  */
 public class BodyData {
-    static final float DAY_IN_MS = 1000 * 60 * 60 * 24;
+    private static final String TAG = "BodyData";
+    static private final long DAY_IN_MS = 1000 * 60 * 60 * 24;
+    static private final double WARNING_ES_TARGET = -1000;
+    private static final double WARNING_ES_EXERCISE_TARGET = 1000;
+
+    static private boolean warningShown = false;
 
     private float exerciseCalTarget;
     private float exerciseCalReached;
@@ -131,8 +141,61 @@ public class BodyData {
                 getWeight(context),
                 getTargetWeight(context),
                 (int) getRemainingDays(context));
+
         double ESTarget = Coach.calculateESTarget(weightChange, (int) getRemainingDays(context));
-        return exerciseCalTarget + getBMRTarget(context) + ESTarget;
+        double total = exerciseCalTarget + ESTarget + getBMRTarget(context);
+
+        if (ESTarget < WARNING_ES_TARGET && !warningShown) {
+            warningShown = true;
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Your calories target is too low!");
+            builder.setMessage("You should set a more feasible target!\n" +
+                    "Negative " + ESTarget + " calories per day is not good for your health.\n" +
+                    "\n" +
+                    "Please change your weight target or your day target to something more reasonable");
+
+            // Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    warningShown = false;
+                    Log.i(TAG, "dialog dismissed");
+                }
+            });
+
+            builder.show();
+        } else if ( total < WARNING_ES_EXERCISE_TARGET && !warningShown) {
+            warningShown = true;
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Your calories target is too low!");
+            builder.setMessage("You should make more physical exercise!\n" +
+                    "A total of " + total + " calories per day is not good for your health.\n" +
+                    "\n" +
+                    "Please do more physical exercise in order to have more calories input");
+
+            // Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    warningShown = false;
+                    Log.i(TAG, "dialog dismissed");
+                }
+            });
+
+            builder.show();
+        }
+
+        return total;
     }
 
     public void setFoodCalReached(float foodCalReached) {
